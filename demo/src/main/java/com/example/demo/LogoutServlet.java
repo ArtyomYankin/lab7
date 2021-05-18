@@ -1,6 +1,7 @@
 package com.example.demo;
 
 import java.io.IOException;
+import java.util.Calendar;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.Cookie;
@@ -42,10 +43,15 @@ public class LogoutServlet extends ChatServlet {
 // не делать ничего
                 response.sendRedirect(response.encodeRedirectURL("/demo_war_exploded/view.htm"));
             }
-        } else {
+        } else if (name!=null) { ChatUser aUser = activeUsers.get(name); if (aUser.getSessionId().equals((String)
+                request.getSession().getId())) { synchronized (activeUsers) {
+            activeUsers.remove(name);
+        }
 // Перенаправить пользователя на главное окно чата
             response.sendRedirect(response.encodeRedirectURL("/demo_war_exploded/view.htm"));
+            messages.add(new ChatMessage("NEW_USER_IN_THE_CHAT", aUser,
+                    Calendar.getInstance().getTimeInMillis()));
         }
     }
-}
+}}
 
